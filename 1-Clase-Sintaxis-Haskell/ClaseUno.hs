@@ -130,12 +130,10 @@ reverse [1,2,3]
 = [3,2,1]
 -}
 
-zip :: [a] -> [b] -> [(a, b)]
-
+zip' :: [a] -> [b] -> [(a, b)]
 zip' [] _ = []
 zip' _ [] = []
-
-zip (x : xs) (y : ys) = (x, y) : zip' xs ys
+zip' (x : xs) (y : ys) = (x, y) : zip' xs ys
 
 {-
 El algoritmo de ordenacion quicksort:

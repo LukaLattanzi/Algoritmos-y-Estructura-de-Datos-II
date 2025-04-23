@@ -81,6 +81,11 @@ Podemos pensar a los valores del tipo Nat como numeros naturales donde:
     Succ (Succ (Succ Zero)) = (1 + 1 + 1 + 0) = 3
 -}
 
+subtract' :: Nat -> Nat -> Nat
+subtract' Zero n = Zero
+subtract' n Zero = n
+subtract' (Succ m) (Succ n) = subtract' m n
+
 -- Usando recursion es facil definir funciones que conviertan los valores entre los tipos Nat e Int.
 
 nat2int :: Nat -> Int
