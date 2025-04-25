@@ -1,8 +1,12 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Avoid lambda" #-}
+
 -- 3. Dar dos ejemplos de funciones que tengan los siguientes tipos:
 
 -- a) (Int -> Int) -> (Bool -> Bool)
 
 -- Función principal
+
 f1 :: (Int -> Int) -> (Bool -> Bool)
 f1 _ = not -- ignora el argumento y devuelve not
 
@@ -90,7 +94,7 @@ f9 xss cond = [x | xs <- xss, x <- xs, cond x]
 
 -- g) (a, b, c) -> Bool
 
-f10 :: Eq a => (a, a, a) -> Bool
+f10 :: (Eq a) => (a, a, a) -> Bool
 f10 (x, y, z) = x == y && y == z
 
 -- f10 (1, 1, 1)

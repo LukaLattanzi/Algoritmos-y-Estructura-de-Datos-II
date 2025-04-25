@@ -103,6 +103,10 @@ Con mas precision, un arbol binario de busqueda (BST) es un arbol binario t tal 
 2   5   8
 -}
 
+-- Cargar arbol de ejemplo:
+-- Arbol :: Bin Int
+-- Arbol = Nodo (Nodo (Nodo Hoja 2 Hoja) 3 (Nodo Hoja 5 Hoja)) 5 (Nodo Hoja 7 (Nodo Hoja 8 Hoja))
+
 -- Tipos de recorridos de un arbol binario:
 
 {-
@@ -206,13 +210,12 @@ delete z (Nodo l b r)
   | z == b = deleteaux z (Nodo l b r) -- Encontrado, proceder a eliminar
 
 deleteaux :: (Ord a) => a -> Bin a -> Bin a
-deleteaux z (Nodo Hoja b Hoja) | z == b = Hoja -- Caso 1: Nodo hoja, eliminarlo
-deleteaux z (Nodo Hoja b r) | z == b = r -- Caso 2: Solo tiene hijo derecho, reemplazar por el hijo derecho
-deleteaux z (Nodo l b Hoja) | z == b = l -- Caso 3: Solo tiene hijo izquierdo, reemplazar por el hijo izquierdo
-deleteaux z (Nodo l b r)
-  | z == b =
-      let y = minimum' r -- Caso 4: Tiene ambos hijos, encontrar el mínimo del subárbol derecho
-       in Nodo l y (delete y r) -- Reemplazar el nodo por el mínimo encontrado y eliminarlo del subárbol derecho
+deleteaux _ (Nodo Hoja _ Hoja) = Hoja -- Caso 1: Nodo hoja, eliminarlo
+deleteaux _ (Nodo Hoja _ r) = r -- Caso 2: Solo tiene hijo derecho, reemplazar por el hijo derecho
+deleteaux _ (Nodo l _ Hoja) = l -- Caso 3: Solo tiene hijo izquierdo, reemplazar por el hijo izquierdo
+deleteaux _ (Nodo l _ r) =
+  let y = minimum' r -- Caso 4: Tiene ambos hijos, encontrar el mínimo del subárbol derecho
+   in Nodo l y (delete y r) -- Reemplazar el nodo por el mínimo encontrado y eliminarlo del subárbol derecho
 
 -- El tiempo de ejecucion de las operaciones depende de la altura del arbol.
 -- Los BST pueden degenerar en una lista si los datos se insertan en orden, si esto ocurre, su rendimiento no sera mejor que una lista.
