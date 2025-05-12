@@ -1,121 +1,77 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
 {-# HLINT ignore "Avoid lambda" #-}
 
 -- 3. Dar dos ejemplos de funciones que tengan los siguientes tipos:
 
 -- a) (Int -> Int) -> (Bool -> Bool)
 
--- Función principal
+foo1 :: (Int -> Int) -> (Bool -> Bool)
+foo1 f b = if b then f 0 == 0 else f 1 == 1
 
-f1 :: (Int -> Int) -> (Bool -> Bool)
-f1 _ = not -- ignora el argumento y devuelve not
-
--- Ejemplo de uso:
-doble :: Int -> Int
-doble x = 2 * x
-
--- Entonces: f1 doble = not
--- Y podés hacer: (f1 doble) True   --> False
---                 (f1 doble) False  --> True
-
-f2 :: (Int -> Int) -> (Bool -> Bool)
-f2 g b = if g 0 == 0 then not b else b
-
--- Ejemplo de funciones Int -> Int:
-
--- g1: devuelve 0 siempre
-cero :: Int -> Int
-cero _ = 0
-
--- g2: suma 1
-suma1 :: Int -> Int
-suma1 x = x + 1
-
--- Entonces:
--- f2 cero = not
--- f2 suma1 = id
-
--- Pruebas:
--- (f2 cero) True   --> False
--- (f2 suma1) True  --> True
+foo2 :: (Int -> Int) -> (Bool -> Bool)
+foo2 f b = if b then f 0 > 0 else f 1 < 0
 
 -- b) Bool -> (Int -> Bool)
 
-f3 :: Bool -> (Int -> Bool)
-f3 True = \x -> even x -- si el bool es True, devuelve función que dice si es par
-f3 False = \x -> odd x -- si es False, devuelve función que dice si es impar
+foo3 :: Bool -> (Int -> Bool)
+foo3 b = if b then even else odd
 
--- Pruebas:
--- (f1 True) 4   --> True  (porque 4 es par)
--- (f1 False) 4  --> False (porque 4 no es impar)
--- (f1 True) 7   --> False
--- (f1 False) 7  --> True
-
--- Tipo: Bool -> (Int -> Bool)
-
-f4 :: Bool -> (Int -> Bool)
-f4 True = \x -> x >= 0 -- si el bool es True, devuelve función que chequea si el número es no negativo
-f4 False = \x -> x < 0 -- si es False, devuelve función que chequea si es negativo
-
--- Pruebas:
--- (f2 True) 5    --> True
--- (f2 True) (-3) --> False
--- (f2 False) 5   --> False
--- (f2 False) (-3)--> True
+foo4 :: Bool -> (Int -> Bool)
+foo4 b = if b then (> 0) else (< 0)
 
 -- c) Char -> Char
 
-f5 :: Char -> Char
-f5 c = if c >= 'a' && c <= 'z' then toEnum (fromEnum c - 32) else c
+foo5 :: Char -> Char
+foo5 c = if c == 'a' then 'b' else 'c'
 
-f6 :: Char -> Char
-f6 c = toEnum (fromEnum c + 1)
+foo6 :: Char -> Char
+foo6 c = if c == 'z' then 'y' else 'x'
 
--- d) f7 :: Int -> (Int -> Bool) -> [Int]
+-- d) Int -> (Int -> Bool) -> [Int]
 
-f7 :: Int -> (Int -> Bool) -> [Int]
-f7 n cond = [x | x <- [0 .. n], cond x]
+foo7 :: Int -> (Int -> Bool) -> [Int]
+foo7 n f = [x | x <- [1 .. n], f x]
+
+foo8 :: Int -> (Int -> Bool) -> [Int]
+foo8 n f = [x | x <- [1 .. n], not (f x)]
 
 -- e) [a] -> (a -> [b]) -> [b]
 
-f8 :: [a] -> (a -> [b]) -> [b]
-f8 xs f = [y | x <- xs, y <- f x]
+foo9 :: [a] -> (a -> [b]) -> [b]
+foo9 xs f = concat [f x | x <- xs]
 
--- f8 [1,2,3] (\x -> [x, x])
--- Resultado: [1,1,2,2,3,3]       -- duplica cada elemento
+foo10 :: [a] -> (a -> [b]) -> [b]
+foo10 xs f = concat [f x | x <- xs, not (null (f x))]
 
 -- f) [[a]] -> (a -> Bool) -> [a]
 
-f9 :: [[a]] -> (a -> Bool) -> [a]
-f9 xss cond = [x | xs <- xss, x <- xs, cond x]
+foo11 :: [[a]] -> (a -> Bool) -> [a]
+foo11 xss f = concat [filter f xs | xs <- xss]
 
--- f9 [[1,2,3], [4,5], [6]] even
--- Resultado: [2,4,6]        -- pares en listas anidadas
+foo12 :: [[a]] -> (a -> Bool) -> [a]
+foo12 xss f = concat [filter (not . f) xs | xs <- xss]
 
 -- g) (a, b, c) -> Bool
 
-f10 :: (Eq a) => (a, a, a) -> Bool
-f10 (x, y, z) = x == y && y == z
+foo13 :: Eq a => (a, a, c) -> Bool
+foo13 (x, y, z) = x == y
 
--- f10 (1, 1, 1)
--- Resultado: True
+foo14 :: Eq a => (a, b, a) -> Bool
+foo14 (x, y, z) = x == z
 
 -- h) (a, b, c) -> Int -> c
 
-f12 :: (a, b, c) -> Int -> c
-f12 (_, _, z) _ = z
+foo15 :: (a, b, c) -> Int -> c
+foo15 (_, _, z) _ = z
 
--- f12 (1, 2, "hola") 5
--- Resultado: "hola"
+foo16 :: (a, b, c) -> Int -> c
+foo16 (_, _, z) n = if n > 0 then z else error "n debe ser mayor que 0"
 
 -- i) (a, a, a) -> Int -> a
 
-f13 :: (a, a, a) -> Int -> a
-f13 (x, y, z) n
-  | n == 0 = x
-  | n == 1 = y
-  | n == 2 = z
-  | otherwise = error "Índice fuera de rango: debe ser 0, 1 o 2"
+foo17 :: (a, a, a) -> Int -> a
+foo17 (x, _, _) n = if n > 0 then x else error "n debe ser mayor que 0"
 
--- f13 ('a', 'b', 'c') 0
--- Resultado: 'a'
+foo18 :: (a, a, a) -> Int -> a
+foo18 (_, y, _) n = if n > 0 then y else error "n debe ser mayor que 0"
